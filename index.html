@@ -3,271 +3,778 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>吴书颖英语背诵神器</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <title>HR培训模块原型演示</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        .blur-text { filter: blur(6px); user-select: none; opacity: 0.4; }
-        .no-blur { filter: blur(0); opacity: 1; }
-        /* 简单的动画 */
-        .fade-in { animation: fadeIn 0.3s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f5f5f5; }
+        .container { height: 100vh; display: flex; flex-direction: column; }
+        
+        .tab-nav { background: white; border-bottom: 1px solid #e5e5e5; display: flex; padding: 0 16px; }
+        .tab-btn { padding: 16px 24px; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; font-size: 14px; color: #666; }
+        .tab-btn:hover { color: #333; background: #f9f9f9; }
+        .tab-btn.active { color: #2563eb; border-bottom-color: #2563eb; background: #eff6ff; }
+        .tab-btn small { display: block; font-size: 12px; color: #999; margin-top: 2px; }
+        
+        .content { flex: 1; overflow: auto; }
+        .hidden { display: none !important; }
+        
+        .flow-page { padding: 24px; }
+        .flow-title { text-align: center; font-size: 20px; font-weight: bold; color: #333; margin-bottom: 24px; }
+        
+        .three-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+        .col-card { padding: 16px; border-radius: 12px; border: 2px solid; }
+        .col-card.blue { background: #eff6ff; border-color: #bfdbfe; }
+        .col-card.green { background: #f0fdf4; border-color: #bbf7d0; }
+        .col-card.purple { background: #faf5ff; border-color: #e9d5ff; }
+        .col-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-weight: bold; }
+        .col-card.blue .col-header { color: #1e40af; }
+        .col-card.green .col-header { color: #166534; }
+        .col-card.purple .col-header { color: #6b21a8; }
+        .col-card ul { list-style: none; font-size: 14px; }
+        .col-card.blue ul { color: #1d4ed8; }
+        .col-card.green ul { color: #15803d; }
+        .col-card.purple ul { color: #7c3aed; }
+        .col-card li { margin-bottom: 4px; }
+        
+        .flow-box { background: #f9fafb; border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+        .flow-box h3 { font-weight: bold; color: #374151; margin-bottom: 16px; }
+        .flow-steps { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+        .flow-step { text-align: center; }
+        .flow-step .icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 20px; }
+        .flow-step .label { font-size: 12px; font-weight: 500; color: #333; }
+        .flow-step .desc { font-size: 11px; color: #666; }
+        .flow-arrow { color: #9ca3af; font-size: 20px; }
+        
+        .data-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .data-card { padding: 16px; border-radius: 8px; border: 1px solid; }
+        .data-card.amber { background: #fffbeb; border-color: #fcd34d; }
+        .data-card.teal { background: #f0fdfa; border-color: #5eead4; }
+        .data-card h4 { font-weight: bold; margin-bottom: 8px; }
+        .data-card.amber h4 { color: #92400e; }
+        .data-card.teal h4 { color: #115e59; }
+        .data-card p { font-size: 14px; margin-bottom: 4px; }
+        .data-card.amber p { color: #b45309; }
+        .data-card.teal p { color: #0f766e; }
+        
+        .pc-page { background: #f3f4f6; min-height: 100%; }
+        .pc-header { background: white; border-bottom: 1px solid #e5e5e5; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+        .pc-header .title { font-weight: bold; color: #333; }
+        .pc-header .breadcrumb { color: #2563eb; margin-left: 16px; }
+        .pc-header .user { font-size: 14px; color: #666; }
+        
+        .pc-subnav { background: white; border-bottom: 1px solid #e5e5e5; padding: 0 16px; display: flex; gap: 24px; }
+        .pc-subnav button { padding: 12px 8px; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; font-size: 14px; color: #666; }
+        .pc-subnav button:hover { color: #333; }
+        .pc-subnav button.active { color: #2563eb; border-bottom-color: #2563eb; }
+        
+        .pc-content { padding: 16px; }
+        .card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card-header { padding: 16px; border-bottom: 1px solid #e5e5e5; display: flex; justify-content: space-between; align-items: center; }
+        .card-header h3 { font-weight: bold; color: #333; }
+        
+        .btn { padding: 8px 16px; border-radius: 8px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: none; }
+        .btn-primary { background: #2563eb; color: white; }
+        .btn-primary:hover { background: #1d4ed8; }
+        .btn-outline { background: white; border: 1px solid #d1d5db; color: #666; }
+        .btn-outline:hover { background: #f9fafb; }
+        
+        table { width: 100%; font-size: 14px; border-collapse: collapse; }
+        th { background: #f9fafb; padding: 12px 16px; text-align: left; color: #666; font-weight: 500; }
+        td { padding: 12px 16px; border-top: 1px solid #e5e5e5; }
+        tr:hover { background: #f9fafb; }
+        
+        .status { padding: 4px 8px; border-radius: 4px; font-size: 12px; display: inline-block; }
+        .status.green { background: #dcfce7; color: #166534; }
+        .status.yellow { background: #fef9c3; color: #a16207; }
+        .status.gray { background: #f3f4f6; color: #4b5563; }
+        
+        .action-btn { color: #2563eb; background: none; border: none; cursor: pointer; font-size: 14px; margin-right: 12px; padding: 4px 8px; }
+        .action-btn:hover { text-decoration: underline; background: #eff6ff; border-radius: 4px; }
+        
+        .form-card { max-width: 640px; }
+        .form-body { padding: 24px; }
+        .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 4px; }
+        .form-group label .required { color: #ef4444; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .form-actions { display: flex; gap: 12px; padding-top: 16px; }
+        
+        .search-bar { padding: 16px; background: #f9fafb; border-bottom: 1px solid #e5e5e5; display: flex; gap: 16px; flex-wrap: wrap; }
+        .search-bar input { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal { background: white; border-radius: 12px; padding: 24px; max-width: 360px; width: 90%; }
+        .modal h3 { text-align: center; font-weight: bold; color: #333; margin-bottom: 16px; }
+        .qr-container { background: #f3f4f6; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+        .qr-box { width: 192px; height: 192px; margin: 0 auto; background: white; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed #d1d5db; }
+        .qr-box .qr-icon { font-size: 72px; }
+        .qr-box .qr-id { font-size: 12px; color: #666; margin-top: 8px; }
+        .modal-info { text-align: center; font-size: 14px; color: #666; margin-bottom: 16px; }
+        .modal-info .name { font-weight: 500; color: #333; }
+        .modal-btns { display: flex; gap: 8px; }
+        .modal-btns button { flex: 1; padding: 8px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+        
+        .mobile-page { display: flex; justify-content: center; padding: 16px; background: #f3f4f6; min-height: 100%; }
+        .phone { width: 320px; background: white; border-radius: 24px; overflow: hidden; border: 8px solid #1f2937; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
+        .phone-status { background: #1f2937; color: white; padding: 8px 16px; font-size: 12px; display: flex; justify-content: space-between; }
+        .phone-header { background: #2563eb; color: white; padding: 16px; }
+        .phone-header h2 { font-size: 18px; font-weight: bold; }
+        .phone-header p { font-size: 14px; color: #bfdbfe; }
+        .phone-body { padding: 16px; min-height: 400px; }
+        
+        .scan-area { background: #f3f4f6; border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 16px; }
+        .scan-frame { width: 128px; height: 128px; margin: 0 auto 16px; border: 4px solid #2563eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .scan-frame::before { content: ''; position: absolute; inset: 8px; border: 2px solid #60a5fa; border-radius: 4px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .scan-frame .icon { font-size: 48px; color: #9ca3af; }
+        .scan-hint { font-size: 14px; color: #666; }
+        
+        .success-box { border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 16px; }
+        .success-box.green { background: #f0fdf4; }
+        .success-box.orange { background: #fff7ed; }
+        .success-box .icon { font-size: 64px; margin-bottom: 16px; }
+        .success-box h3 { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+        .success-box.green .icon, .success-box.green h3 { color: #22c55e; }
+        .success-box.green p { color: #16a34a; }
+        .success-box.orange .icon, .success-box.orange h3 { color: #f97316; }
+        .success-box.orange p { color: #ea580c; }
+        
+        .info-card { background: #f9fafb; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+        .info-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .info-row:last-child { margin-bottom: 0; }
+        .info-row .icon { font-size: 20px; color: #9ca3af; }
+        .info-row .label { font-size: 12px; color: #666; }
+        .info-row .value { font-size: 14px; font-weight: 500; color: #333; }
+        
+        .user-card { background: #eff6ff; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+        .user-card .header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 500; color: #1e40af; }
+        .user-card .name { color: #1d4ed8; }
+        .user-card .id { font-size: 12px; color: #2563eb; margin-top: 4px; }
+        
+        .confirm-box { background: #f0fdf4; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 16px; }
+        .confirm-box .icon { font-size: 48px; color: #22c55e; margin-bottom: 8px; }
+        .confirm-box p { color: #166534; font-weight: 500; }
+        
+        .result-card { background: #f9fafb; border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: left; }
+        .result-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .result-row:last-child { margin-bottom: 0; }
+        .result-row .label { color: #666; }
+        .result-row .value { font-weight: 500; }
+        .result-row .value.green { color: #22c55e; }
+        .result-row .value.orange { color: #f97316; }
+        .result-row .value.blue { color: #2563eb; font-weight: bold; }
+        .result-divider { border-top: 1px solid #e5e5e5; margin-top: 8px; padding-top: 8px; }
+        
+        .archive-notice { background: #eff6ff; border-radius: 12px; padding: 12px; text-align: center; font-size: 14px; color: #1d4ed8; margin-bottom: 16px; }
+        
+        .hint-text { background: #f9fafb; border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: left; }
+        .hint-text .title { font-weight: 500; color: #333; margin-bottom: 8px; }
+        .hint-text .desc { font-size: 14px; color: #666; }
+        
+        .record-list { margin-bottom: 16px; }
+        .record-item { background: #f9fafb; border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .record-item .top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .record-item .name { font-weight: 500; color: #333; }
+        .record-item .status { font-size: 12px; background: #dcfce7; color: #166534; padding: 4px 8px; border-radius: 4px; }
+        .record-item .bottom { display: flex; justify-content: space-between; font-size: 14px; color: #666; }
+        
+        .mobile-btn { width: 100%; padding: 12px; border-radius: 12px; font-size: 16px; font-weight: 500; cursor: pointer; border: none; margin-bottom: 8px; }
+        .mobile-btn:last-child { margin-bottom: 0; }
+        .mobile-btn.primary { background: #2563eb; color: white; }
+        .mobile-btn.green { background: #22c55e; color: white; }
+        .mobile-btn.orange { background: #f97316; color: white; }
+        .mobile-btn.outline { background: white; border: 1px solid #d1d5db; color: #666; }
+        .mobile-btn:hover { opacity: 0.9; }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
-
-    <div class="max-w-md w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
-        
-        <div class="bg-indigo-600 p-6 text-white">
-            <div class="flex justify-between items-center mb-4">
-                <h1 class="text-xl font-bold flex items-center gap-2">
-                    <i data-lucide="star" class="text-yellow-300 fill-current"></i> 
-                    背诵助手
-                </h1>
-                <span id="progress-text" class="text-indigo-200 text-sm font-mono">1 / 13</span>
-            </div>
-            
-            <div class="w-full bg-indigo-800 rounded-full h-2 mb-2 overflow-hidden">
-                <div id="progress-bar" class="bg-yellow-400 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
-            </div>
-            
-            <div class="flex justify-between bg-indigo-700/50 p-1 rounded-lg mt-4">
-                <button onclick="setMode('learn')" id="btn-mode-learn" class="mode-btn flex-1 py-2 text-xs font-medium rounded-md transition-all bg-white text-indigo-700 shadow-sm">👀 学习模式</button>
-                <button onclick="setMode('recite')" id="btn-mode-recite" class="mode-btn flex-1 py-2 text-xs font-medium rounded-md transition-all text-indigo-200 hover:text-white">🙈 遮盖模式</button>
-                <button onclick="setMode('quiz')" id="btn-mode-quiz" class="mode-btn flex-1 py-2 text-xs font-medium rounded-md transition-all text-indigo-200 hover:text-white">✍️ 填空测试</button>
-            </div>
+<body>
+    <div class="container">
+        <div class="tab-nav">
+            <button class="tab-btn active" id="tab-flow">
+                📊 流程设计
+                <small>整体架构</small>
+            </button>
+            <button class="tab-btn" id="tab-pc">
+                💻 PC端原型
+                <small>管理后台</small>
+            </button>
+            <button class="tab-btn" id="tab-mobile">
+                📱 移动端原型
+                <small>企微扫码</small>
+            </button>
         </div>
 
-        <div id="content-area" class="p-6 flex flex-col items-center min-h-[300px] justify-center relative bg-white">
+        <div class="content">
+            <!-- 流程设计页 -->
+            <div id="flow-page" class="flow-page">
+                <h2 class="flow-title">培训签到全流程</h2>
+                
+                <div class="three-cols">
+                    <div class="col-card blue">
+                        <div class="col-header">🖥️ PC管理端</div>
+                        <ul>
+                            <li>• 创建培训任务</li>
+                            <li>• 生成签到二维码</li>
+                            <li>• 查看签到统计</li>
+                            <li>• 导出培训报表</li>
+                        </ul>
+                    </div>
+                    <div class="col-card green">
+                        <div class="col-header">📱 企微移动端</div>
+                        <ul>
+                            <li>• 扫码签到</li>
+                            <li>• 扫码签离</li>
+                            <li>• 查看我的培训</li>
+                            <li>• 培训记录查询</li>
+                        </ul>
+                    </div>
+                    <div class="col-card purple">
+                        <div class="col-header">🗄️ 系统自动处理</div>
+                        <ul>
+                            <li>• 身份自动校验</li>
+                            <li>• 时间范围校验</li>
+                            <li>• 记录自动归档</li>
+                            <li>• 时长自动计算</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flow-box">
+                    <h3>业务流程</h3>
+                    <div class="flow-steps">
+                        <div class="flow-step">
+                            <div class="icon" style="background:#dbeafe;">➕</div>
+                            <div class="label">创建任务</div>
+                            <div class="desc">PC端录入</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="icon" style="background:#e0e7ff;">📱</div>
+                            <div class="label">生成二维码</div>
+                            <div class="desc">系统自动</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="icon" style="background:#cffafe;">👥</div>
+                            <div class="label">现场展示</div>
+                            <div class="desc">培训现场</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="icon" style="background:#dcfce7;">📲</div>
+                            <div class="label">扫码签到</div>
+                            <div class="desc">企微扫码</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="icon" style="background:#fef9c3;">⏱️</div>
+                            <div class="label">培训进行</div>
+                            <div class="desc">正常培训</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="icon" style="background:#ffedd5;">✅</div>
+                            <div class="label">扫码签离</div>
+                            <div class="desc">企微扫码</div>
+                        </div>
+                        <div class="flow-arrow">→</div>
+                        <div class="flow-step">
+                            <div class="icon" style="background:#f3e8ff;">📄</div>
+                            <div class="label">自动归档</div>
+                            <div class="desc">员工档案</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="data-cards">
+                    <div class="data-card amber">
+                        <h4>📋 培训任务数据</h4>
+                        <p>• 任务ID (唯一标识)</p>
+                        <p>• 课程名称、培训老师</p>
+                        <p>• 培训时间、地点</p>
+                        <p>• 内容简介</p>
+                    </div>
+                    <div class="data-card teal">
+                        <h4>📊 签到记录数据</h4>
+                        <p>• 员工ID (自动识别)</p>
+                        <p>• 签到/签离时间</p>
+                        <p>• 培训时长 (自动计算)</p>
+                        <p>• 归档至培训子集</p>
+                    </div>
+                </div>
             </div>
 
-        <div class="bg-slate-50 p-4 border-t border-slate-100">
-            <div class="flex items-center justify-center gap-6 mb-6">
-                <button onclick="playAudio(0.6)" class="flex flex-col items-center gap-1 text-xs font-medium text-slate-400 hover:text-indigo-500 transition-colors">
-                    <div class="p-3 bg-white rounded-full shadow-sm border border-slate-200 active:scale-95 transition-transform">
-                        <i data-lucide="turtle" size="20"></i>
+            <!-- PC端页面 -->
+            <div id="pc-page" class="pc-page hidden">
+                <div class="pc-header">
+                    <div>
+                        <span class="title">EHR人力资源系统</span>
+                        <span style="color:#ccc;margin:0 12px;">|</span>
+                        <span class="breadcrumb">培训管理</span>
                     </div>
-                    慢速读
-                </button>
+                    <div class="user">👤 管理员</div>
+                </div>
+                
+                <div class="pc-subnav">
+                    <button class="active" id="pc-tab-list">培训任务列表</button>
+                    <button id="pc-tab-create">创建培训任务</button>
+                    <button id="pc-tab-records">培训记录查询</button>
+                </div>
 
-                <button onclick="playAudio(1.0)" class="w-16 h-16 bg-indigo-600 rounded-full shadow-lg hover:bg-indigo-700 active:scale-95 flex items-center justify-center text-white transition-all ring-4 ring-indigo-100">
-                    <i data-lucide="volume-2" size="32"></i>
-                </button>
-
-                <button onclick="playAudio(1.0)" class="flex flex-col items-center gap-1 text-xs font-medium text-slate-400 hover:text-indigo-500 transition-colors">
-                    <div class="p-3 bg-white rounded-full shadow-sm border border-slate-200 active:scale-95 transition-transform">
-                        <i data-lucide="zap" size="20"></i>
+                <div class="pc-content">
+                    <div id="pc-list" class="card">
+                        <div class="card-header">
+                            <h3>培训任务列表</h3>
+                            <button class="btn btn-primary" id="btn-new-task">➕ 新建任务</button>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>任务编号</th>
+                                    <th>课程名称</th>
+                                    <th>培训老师</th>
+                                    <th>培训时间</th>
+                                    <th>地点</th>
+                                    <th>签到情况</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="color:#666;">TR20250113001</td>
+                                    <td style="font-weight:500;">消防安全培训</td>
+                                    <td>张明</td>
+                                    <td>2025-01-15 14:00-16:00</td>
+                                    <td>3楼培训室</td>
+                                    <td><span style="color:#2563eb;">28</span><span style="color:#999;">/35</span></td>
+                                    <td><span class="status green">进行中</span></td>
+                                    <td>
+                                        <button class="action-btn show-qr">📱 二维码</button>
+                                        <button class="action-btn" style="color:#666;">👁️ 详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#666;">TR20250112002</td>
+                                    <td style="font-weight:500;">新员工入职培训</td>
+                                    <td>李华</td>
+                                    <td>2025-01-14 09:00-12:00</td>
+                                    <td>5楼会议室</td>
+                                    <td><span style="color:#2563eb;">12</span><span style="color:#999;">/12</span></td>
+                                    <td><span class="status gray">已完成</span></td>
+                                    <td>
+                                        <button class="action-btn show-qr">📱 二维码</button>
+                                        <button class="action-btn" style="color:#666;">👁️ 详情</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color:#666;">TR20250111003</td>
+                                    <td style="font-weight:500;">客服技能提升</td>
+                                    <td>王芳</td>
+                                    <td>2025-01-13 15:00-17:00</td>
+                                    <td>2楼培训室</td>
+                                    <td><span style="color:#2563eb;">0</span><span style="color:#999;">/20</span></td>
+                                    <td><span class="status yellow">待开始</span></td>
+                                    <td>
+                                        <button class="action-btn show-qr">📱 二维码</button>
+                                        <button class="action-btn" style="color:#666;">👁️ 详情</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    原速读
-                </button>
+
+                    <div id="pc-create" class="card form-card hidden">
+                        <div class="card-header">
+                            <h3>创建培训任务</h3>
+                        </div>
+                        <div class="form-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>课程名称 <span class="required">*</span></label>
+                                    <input type="text" placeholder="请输入课程名称">
+                                </div>
+                                <div class="form-group">
+                                    <label>培训老师 <span class="required">*</span></label>
+                                    <input type="text" placeholder="请输入培训老师姓名">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>培训日期 <span class="required">*</span></label>
+                                    <input type="date">
+                                </div>
+                                <div class="form-group">
+                                    <label>培训时间 <span class="required">*</span></label>
+                                    <input type="text" placeholder="如: 14:00-16:00">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>培训地点 <span class="required">*</span></label>
+                                <input type="text" placeholder="请输入培训地点">
+                            </div>
+                            <div class="form-group">
+                                <label>内容简介</label>
+                                <textarea rows="3" placeholder="请输入培训内容简介"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary" id="btn-save-qr">保存并生成二维码</button>
+                                <button class="btn btn-outline" id="btn-cancel">取消</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="pc-records" class="card hidden">
+                        <div class="card-header">
+                            <h3>培训记录查询</h3>
+                            <button class="btn btn-outline">📥 导出报表</button>
+                        </div>
+                        <div class="search-bar">
+                            <input type="text" placeholder="员工姓名" style="width:120px;">
+                            <input type="text" placeholder="课程名称" style="width:160px;">
+                            <input type="date">
+                            <button class="btn btn-primary">🔍 查询</button>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>员工姓名</th>
+                                    <th>所属部门</th>
+                                    <th>培训课程</th>
+                                    <th>签到时间</th>
+                                    <th>签离时间</th>
+                                    <th>培训时长</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="font-weight:500;">陈小明</td>
+                                    <td>运营部</td>
+                                    <td>消防安全培训</td>
+                                    <td style="color:#22c55e;">13:58</td>
+                                    <td style="color:#f97316;">16:02</td>
+                                    <td style="color:#2563eb;">2小时4分</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:500;">李小红</td>
+                                    <td>客服部</td>
+                                    <td>消防安全培训</td>
+                                    <td style="color:#22c55e;">14:01</td>
+                                    <td style="color:#f97316;">16:00</td>
+                                    <td style="color:#2563eb;">1小时59分</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-weight:500;">张小华</td>
+                                    <td>财务部</td>
+                                    <td>消防安全培训</td>
+                                    <td style="color:#22c55e;">14:05</td>
+                                    <td style="color:#f97316;">15:58</td>
+                                    <td style="color:#2563eb;">1小时53分</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
-            <div class="flex justify-between items-center gap-4">
-                <button onclick="prevSentence()" id="btn-prev" class="flex items-center gap-1 px-4 py-2 rounded-lg font-medium text-indigo-600 hover:bg-indigo-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <i data-lucide="chevron-left"></i> 上一句
-                </button>
+            <!-- 移动端页面 -->
+            <div id="mobile-page" class="mobile-page hidden">
+                <div class="phone">
+                    <div class="phone-status">
+                        <span>14:32</span>
+                        <span>企业微信</span>
+                        <span>100%</span>
+                    </div>
+                    <div class="phone-header">
+                        <h2>培训签卡</h2>
+                        <p>EHR人力资源系统</p>
+                    </div>
+                    <div class="phone-body">
+                        <div id="mobile-scan">
+                            <div class="scan-area">
+                                <div class="scan-frame">
+                                    <div class="icon">📷</div>
+                                </div>
+                                <p class="scan-hint">将二维码放入框内扫描</p>
+                            </div>
+                            <button class="mobile-btn primary" id="btn-scan">模拟扫码成功</button>
+                            <button class="mobile-btn outline" id="btn-my-records">查看我的培训记录</button>
+                        </div>
 
-                <button onclick="nextSentence()" id="btn-next" class="flex items-center gap-1 px-5 py-2.5 rounded-lg font-medium bg-indigo-600 text-white shadow-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                    下一句 <i data-lucide="chevron-right"></i>
-                </button>
+                        <div id="mobile-confirm" class="hidden">
+                            <div class="confirm-box">
+                                <div class="icon">✅</div>
+                                <p>扫码成功</p>
+                            </div>
+                            
+                            <div class="info-card">
+                                <div class="info-row">
+                                    <div class="icon">📄</div>
+                                    <div>
+                                        <div class="label">培训课程</div>
+                                        <div class="value">消防安全培训</div>
+                                    </div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="icon">👤</div>
+                                    <div>
+                                        <div class="label">培训老师</div>
+                                        <div class="value">张明</div>
+                                    </div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="icon">📅</div>
+                                    <div>
+                                        <div class="label">培训时间</div>
+                                        <div class="value">2025-01-15 14:00-16:00</div>
+                                    </div>
+                                </div>
+                                <div class="info-row">
+                                    <div class="icon">📍</div>
+                                    <div>
+                                        <div class="label">培训地点</div>
+                                        <div class="value">3楼培训室</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="user-card">
+                                <div class="header">👤 当前用户</div>
+                                <div class="name">陈小明 (运营部)</div>
+                                <div class="id">工号: YT20230156</div>
+                            </div>
+
+                            <button class="mobile-btn green" id="btn-confirm-signin">确认签到</button>
+                            <button class="mobile-btn outline" id="btn-cancel-signin">取消</button>
+                        </div>
+
+                        <div id="mobile-success" class="hidden">
+                            <div class="success-box green">
+                                <div class="icon">✅</div>
+                                <h3>签到成功!</h3>
+                                <p>签到时间: 14:32:15</p>
+                            </div>
+                            
+                            <div class="hint-text">
+                                <div class="title">消防安全培训</div>
+                                <div class="desc">培训结束后请再次扫码完成签离</div>
+                            </div>
+
+                            <button class="mobile-btn orange" id="btn-signout">模拟培训结束 → 签离</button>
+                            <button class="mobile-btn outline" id="btn-back-home">返回首页</button>
+                        </div>
+
+                        <div id="mobile-signout" class="hidden">
+                            <div class="success-box orange">
+                                <div class="icon">✅</div>
+                                <h3>签离成功!</h3>
+                                <p>签离时间: 16:02:08</p>
+                            </div>
+                            
+                            <div class="result-card">
+                                <div class="result-row">
+                                    <span class="label">培训课程</span>
+                                    <span class="value">消防安全培训</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="label">签到时间</span>
+                                    <span class="value green">14:32:15</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="label">签离时间</span>
+                                    <span class="value orange">16:02:08</span>
+                                </div>
+                                <div class="result-row result-divider">
+                                    <span class="label">培训时长</span>
+                                    <span class="value blue">1小时30分</span>
+                                </div>
+                            </div>
+
+                            <div class="archive-notice">✓ 培训记录已自动归档至您的培训档案</div>
+
+                            <button class="mobile-btn primary" id="btn-done">完成</button>
+                        </div>
+
+                        <div id="mobile-records" class="hidden">
+                            <h3 style="font-weight:bold;color:#333;margin-bottom:16px;">我的培训记录</h3>
+                            <div class="record-list">
+                                <div class="record-item">
+                                    <div class="top">
+                                        <span class="name">消防安全培训</span>
+                                        <span class="status">已完成</span>
+                                    </div>
+                                    <div class="bottom">
+                                        <span>2025-01-15</span>
+                                        <span>时长: 1小时30分</span>
+                                    </div>
+                                </div>
+                                <div class="record-item">
+                                    <div class="top">
+                                        <span class="name">新员工入职培训</span>
+                                        <span class="status">已完成</span>
+                                    </div>
+                                    <div class="bottom">
+                                        <span>2025-01-10</span>
+                                        <span>时长: 3小时</span>
+                                    </div>
+                                </div>
+                                <div class="record-item">
+                                    <div class="top">
+                                        <span class="name">服务礼仪培训</span>
+                                        <span class="status">已完成</span>
+                                    </div>
+                                    <div class="bottom">
+                                        <span>2025-01-05</span>
+                                        <span>时长: 2小时</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="mobile-btn outline" id="btn-back-scan">返回扫码</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 二维码弹窗 -->
+    <div id="qr-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h3>培训签到二维码</h3>
+            <div class="qr-container">
+                <div class="qr-box">
+                    <div class="qr-icon">📱</div>
+                    <div class="qr-id">TR20250113001</div>
+                </div>
+            </div>
+            <div class="modal-info">
+                <p class="name">消防安全培训</p>
+                <p>2025-01-15 14:00-16:00</p>
+            </div>
+            <div class="modal-btns">
+                <button class="btn btn-primary" style="flex:1;">下载二维码</button>
+                <button class="btn btn-outline" style="flex:1;" id="btn-close-modal">关闭</button>
             </div>
         </div>
     </div>
 
     <script>
-        // --- 数据 ---
-        const SENTENCES = [
-            { en: "Friendship, like sunshine, is warm and bright.", cn: "友谊像阳光一样，既温暖又明亮。" },
-            { en: "I have a good friend, and her name is An Xin.", cn: "我有一个好朋友，她的名字叫安心。" },
-            { en: "An Xin has big eyes and long black hair.", cn: "安心有着大眼睛和黑色的长发。" },
-            { en: "She is not very tall, but she is good at sports and modern dance.", cn: "她不是很高，但她擅长运动和现代舞。" },
-            { en: "We often play table tennis together after school.", cn: "放学后我们经常一起打乒乓球。" },
-            { en: "An Xin is kind, friendly, and funny.", cn: "安心善良、友好而且风趣（搞笑）。" },
-            { en: "She always helps others and makes people laugh.", cn: "她总是帮助别人，并且让人发笑。" },
-            { en: "When I feel sad or blue, she always cheers me up.", cn: "当我觉得伤心难过的时候，她经常鼓舞我。" },
-            { en: "I can trust her and share my thoughts with her.", cn: "我可以信任她，并与她分享我的想法。" },
-            { en: "She is good at English and often helps me with my English homework in her free time.", cn: "她擅长英语，经常在空闲时间帮我做英语作业。" },
-            { en: "With An Xin’s help, I have become more open and confident.", cn: "在安心的帮助下，我变得更加开朗和自信。" },
-            { en: "I have the courage to speak English and try new things.", cn: "我有勇气说英语并尝试新事物。" },
-            { en: "It’s wonderful to have such a good friend, and I hope we will be friends forever.", cn: "有这样一个好朋友真好，我希望我们将永远是朋友。" }
-        ];
-
-        // --- 状态 ---
-        let currentIndex = 0;
-        let mode = 'learn'; // 'learn', 'recite', 'quiz'
-        let showEnglishInRecite = false; // 在遮盖模式下是否临时显示英文
-        let synth = window.speechSynthesis;
-        let currentUtterance = null;
-
-        // --- 初始化 ---
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            render();
-        });
-
-        // --- 核心逻辑 ---
-
-        function render() {
-            const data = SENTENCES[currentIndex];
-            const contentArea = document.getElementById('content-area');
+        // 等待DOM加载完成
+        document.addEventListener('DOMContentLoaded', function() {
             
-            // 更新进度条
-            document.getElementById('progress-text').innerText = `${currentIndex + 1} / ${SENTENCES.length}`;
-            document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / SENTENCES.length) * 100}%`;
-
-            // 更新按钮状态
-            document.getElementById('btn-prev').disabled = currentIndex === 0;
-            document.getElementById('btn-next').disabled = currentIndex === SENTENCES.length - 1;
-
-            // 更新模式按钮样式
-            document.querySelectorAll('.mode-btn').forEach(btn => {
-                btn.className = "mode-btn flex-1 py-2 text-xs font-medium rounded-md transition-all text-indigo-200 hover:text-white";
+            // ========== 主Tab切换 ==========
+            document.getElementById('tab-flow').addEventListener('click', function() {
+                switchMainTab('flow');
             });
-            document.getElementById(`btn-mode-${mode}`).className = "mode-btn flex-1 py-2 text-xs font-medium rounded-md transition-all bg-white text-indigo-700 shadow-sm";
+            document.getElementById('tab-pc').addEventListener('click', function() {
+                switchMainTab('pc');
+            });
+            document.getElementById('tab-mobile').addEventListener('click', function() {
+                switchMainTab('mobile');
+            });
 
-            // 渲染主要内容
-            let html = '';
-
-            if (mode === 'quiz') {
-                html = `
-                    <div class="space-y-4 w-full fade-in">
-                        <div class="text-slate-600 font-medium text-lg mb-2 text-center">${data.cn}</div>
-                        <div class="bg-blue-50 p-4 rounded-xl border-2 border-blue-100 min-h-[100px] flex flex-col items-center justify-center">
-                            <textarea id="quiz-input" 
-                                class="w-full p-3 rounded-lg border-2 border-blue-200 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors"
-                                rows="3" placeholder="在这里输入英文..."></textarea>
-                            <div id="quiz-feedback" class="mt-2 font-bold text-center h-6"></div>
-                        </div>
-                        <div class="flex justify-center gap-3 mt-2">
-                            <button onclick="checkAnswer()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full font-bold shadow-md active:scale-95 transition-transform flex items-center gap-2">
-                                <i data-lucide="trophy" width="18"></i> 检查
-                            </button>
-                             <button onclick="showAnswer()" class="text-slate-400 text-sm underline">偷看答案</button>
-                        </div>
-                    </div>
-                `;
-            } else {
-                // Learn or Recite mode
-                const isReciteBlur = mode === 'recite' && !showEnglishInRecite;
+            function switchMainTab(tab) {
+                // 更新按钮状态
+                document.getElementById('tab-flow').className = 'tab-btn' + (tab === 'flow' ? ' active' : '');
+                document.getElementById('tab-pc').className = 'tab-btn' + (tab === 'pc' ? ' active' : '');
+                document.getElementById('tab-mobile').className = 'tab-btn' + (tab === 'mobile' ? ' active' : '');
                 
-                html = `
-                    <div class="flex flex-col items-center w-full fade-in cursor-pointer" onclick="toggleReciteReveal()">
-                        <div class="text-center transition-all duration-300 mb-6 w-full ${isReciteBlur ? 'blur-text' : 'no-blur'}">
-                            <p class="text-2xl sm:text-3xl font-bold text-slate-800 leading-tight select-none">
-                                ${data.en}
-                            </p>
-                            ${mode === 'recite' && isReciteBlur ? '<p class="text-xs text-indigo-400 mt-2 font-normal text-center w-full no-blur opacity-100">(点击显示英文)</p>' : ''}
-                        </div>
-                        
-                        <div class="text-center w-full p-4 rounded-xl bg-slate-50 text-slate-600">
-                            <p class="text-lg font-medium">${data.cn}</p>
-                        </div>
-                    </div>
-                `;
+                // 显示对应页面
+                document.getElementById('flow-page').className = tab === 'flow' ? 'flow-page' : 'flow-page hidden';
+                document.getElementById('pc-page').className = tab === 'pc' ? 'pc-page' : 'pc-page hidden';
+                document.getElementById('mobile-page').className = tab === 'mobile' ? 'mobile-page' : 'mobile-page hidden';
             }
 
-            contentArea.innerHTML = html;
-            lucide.createIcons(); // 重新渲染图标
-        }
+            // ========== PC端子Tab切换 ==========
+            document.getElementById('pc-tab-list').addEventListener('click', function() {
+                switchPCTab('list');
+            });
+            document.getElementById('pc-tab-create').addEventListener('click', function() {
+                switchPCTab('create');
+            });
+            document.getElementById('pc-tab-records').addEventListener('click', function() {
+                switchPCTab('records');
+            });
+            document.getElementById('btn-new-task').addEventListener('click', function() {
+                switchPCTab('create');
+            });
+            document.getElementById('btn-cancel').addEventListener('click', function() {
+                switchPCTab('list');
+            });
 
-        function setMode(newMode) {
-            mode = newMode;
-            showEnglishInRecite = false; // 重置遮盖状态
-            stopAudio();
-            render();
-        }
-
-        function nextSentence() {
-            if (currentIndex < SENTENCES.length - 1) {
-                currentIndex++;
-                showEnglishInRecite = false;
-                stopAudio();
-                render();
+            function switchPCTab(tab) {
+                // 更新按钮状态
+                document.getElementById('pc-tab-list').className = tab === 'list' ? 'active' : '';
+                document.getElementById('pc-tab-create').className = tab === 'create' ? 'active' : '';
+                document.getElementById('pc-tab-records').className = tab === 'records' ? 'active' : '';
+                
+                // 显示对应内容
+                document.getElementById('pc-list').className = 'card' + (tab === 'list' ? '' : ' hidden');
+                document.getElementById('pc-create').className = 'card form-card' + (tab === 'create' ? '' : ' hidden');
+                document.getElementById('pc-records').className = 'card' + (tab === 'records' ? '' : ' hidden');
             }
-        }
 
-        function prevSentence() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                showEnglishInRecite = false;
-                stopAudio();
-                render();
-            }
-        }
-
-        function toggleReciteReveal() {
-            if (mode === 'recite') {
-                showEnglishInRecite = !showEnglishInRecite;
-                render();
-            }
-        }
-
-        // --- 播放逻辑 ---
-        function playAudio(rate) {
-            stopAudio(); // 先停止之前的
+            // ========== 二维码弹窗 ==========
+            var qrModal = document.getElementById('qr-modal');
             
-            const text = SENTENCES[currentIndex].en;
-            const u = new SpeechSynthesisUtterance(text);
+            // 所有显示二维码的按钮
+            document.querySelectorAll('.show-qr').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    qrModal.className = 'modal-overlay';
+                });
+            });
+            document.getElementById('btn-save-qr').addEventListener('click', function() {
+                qrModal.className = 'modal-overlay';
+            });
             
-            // 尝试获取英文语音
-            const voices = synth.getVoices();
-            // 优先选 Google US English 或 Microsoft David/Zira 或 系统默认英文
-            const enVoice = voices.find(v => v.name.includes("Google US English")) || 
-                            voices.find(v => v.lang.startsWith("en-US")) || 
-                            voices.find(v => v.lang.startsWith("en"));
-            
-            if (enVoice) u.voice = enVoice;
-            
-            u.rate = rate; // 语速
-            u.pitch = 1;
-            u.volume = 1;
+            // 关闭弹窗
+            document.getElementById('btn-close-modal').addEventListener('click', function() {
+                qrModal.className = 'modal-overlay hidden';
+            });
+            qrModal.addEventListener('click', function(e) {
+                if (e.target === qrModal) {
+                    qrModal.className = 'modal-overlay hidden';
+                }
+            });
 
-            synth.speak(u);
-        }
-
-        function stopAudio() {
-            if (synth.speaking) {
-                synth.cancel();
+            // ========== 移动端步骤切换 ==========
+            function switchMobileStep(step) {
+                var steps = ['scan', 'confirm', 'success', 'signout', 'records'];
+                steps.forEach(function(s) {
+                    var el = document.getElementById('mobile-' + s);
+                    el.className = s === step ? '' : 'hidden';
+                });
             }
-        }
 
-        // --- 测验逻辑 ---
-        function checkAnswer() {
-            const input = document.getElementById('quiz-input').value;
-            const target = SENTENCES[currentIndex].en;
-            const feedbackEl = document.getElementById('quiz-feedback');
-            const inputEl = document.getElementById('quiz-input');
+            document.getElementById('btn-scan').addEventListener('click', function() {
+                switchMobileStep('confirm');
+            });
+            document.getElementById('btn-my-records').addEventListener('click', function() {
+                switchMobileStep('records');
+            });
+            document.getElementById('btn-confirm-signin').addEventListener('click', function() {
+                switchMobileStep('success');
+            });
+            document.getElementById('btn-cancel-signin').addEventListener('click', function() {
+                switchMobileStep('scan');
+            });
+            document.getElementById('btn-signout').addEventListener('click', function() {
+                switchMobileStep('signout');
+            });
+            document.getElementById('btn-back-home').addEventListener('click', function() {
+                switchMobileStep('scan');
+            });
+            document.getElementById('btn-done').addEventListener('click', function() {
+                switchMobileStep('scan');
+            });
+            document.getElementById('btn-back-scan').addEventListener('click', function() {
+                switchMobileStep('scan');
+            });
 
-            // 简单的正则处理：去标点，转小写
-            const cleanInput = input.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").trim();
-            const cleanTarget = target.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, "").trim();
-
-            if (cleanInput === cleanTarget) {
-                feedbackEl.innerText = "🎉 太棒了！完全正确！";
-                feedbackEl.className = "mt-2 font-bold text-center h-6 text-green-600 animate-bounce";
-                inputEl.classList.remove('border-blue-200', 'border-red-300');
-                inputEl.classList.add('border-green-500', 'bg-green-50');
-                playAudio(1.0); // 答对自动播放
-            } else {
-                feedbackEl.innerText = "还不对哦，再试一次！";
-                feedbackEl.className = "mt-2 font-bold text-center h-6 text-red-500";
-                inputEl.classList.remove('border-blue-200', 'border-green-500');
-                inputEl.classList.add('border-red-300', 'bg-red-50');
-            }
-        }
-
-        function showAnswer() {
-             const inputEl = document.getElementById('quiz-input');
-             inputEl.value = SENTENCES[currentIndex].en;
-             checkAnswer();
-        }
-
-        // 解决 Safari 语音加载可能延迟的问题
-        window.speechSynthesis.onvoiceschanged = function() {
-            // 可以在这里更新语音列表
-        };
-
+            console.log('HR培训模块原型已加载完成！');
+        });
     </script>
 </body>
 </html>
